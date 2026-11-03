@@ -97,10 +97,10 @@ $('backupReminderDownload').onclick=exportBackup;
 $('backupReminderLater').onclick=()=>{backupDismissedForSession=backupReminderKey();showBackupReminder()};
 window.addEventListener('pageshow',()=>showBackupReminder());
 window.addEventListener('focus',()=>showBackupReminder());
-render();updateRest();initAuth();
+
 
 // Облачный аккаунт: отдельная запись training_data для каждого auth.uid().
-const SUPABASE_URL='https://bxngmyhunmpcbhlbpqlie.supabase.co', PUBLIC_KEY='sb_publishable_kxtthDEsvBJEMN9CQzqFKg_B70tQQpy';
+const SUPABASE_URL='https://bxngmyhumpcbhlbpqlie.supabase.co', PUBLIC_KEY='sb_publishable_kxtthDEsvBJEMN9CQzqFKg_B70tQQpy';
 let auth=null,cloudTimer=null,cloudBusy=false,cloudPending=false,cloudReady=false;
 const AUTH_KEY='my_training_supabase_session_v1';
 const apiHeaders=(token)=>({'apikey':PUBLIC_KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'});
@@ -118,4 +118,5 @@ async function initAuth(){$('signIn').onclick=()=>doAuth('login');$('signUp').on
 async function doAuth(mode){const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email.includes('@')||password.length<6){$('authMessage').textContent='Введи email и пароль от 6 символов';return}$('authMessage').textContent='Подождите…';try{if(mode==='signup'){const data=await authCall('signup',{email,password});if(data.access_token)await completeLogin(data);else $('authMessage').textContent='Проверь почту и подтверди регистрацию, затем нажми «Войти».';}else await completeLogin(await authCall('token?grant_type=password',{email,password}));}catch(e){$('authMessage').textContent=e.message;}}
 async function logout(){if(cloudPending)await cloudSave(true);auth=null;cloudReady=false;clearTimeout(cloudTimer);showBackupReminder();localStorage.removeItem(AUTH_KEY);db=initial();session=null;dayId=db.days[0]?.id||null;render();showAuth('Выход выполнен. Войди в свой аккаунт.');}
 function importLegacy(){let legacy;try{legacy=JSON.parse(localStorage.getItem(KEY)||'null')}catch{}if(!validateData(legacy)){alert('На этом устройстве не найдены старые данные. Можно импортировать JSON-копию ниже.');return}if(!confirm('Заменить облачную программу и историю этого аккаунта старыми данными с iPhone? Сначала экспортируй текущую копию, если она нужна.'))return;db=legacy;session=null;dayId=db.days[0]?.id||null;save();render();toast('Старые данные перенесены — сохраняются в облаке');}
+render();updateRest();initAuth();
 </script></body></html>
